@@ -1,0 +1,26 @@
+plot4 <- function() {
+  pwr <- read.table("household_power_consumption", header=TRUE, sep=";", as.is = TRUE )
+  pwr$Date <- as.Date(pwr$Date, format="%d/%m/%Y")
+  days <- pwr[pwr$Date %in% as.Date(c("2007-02-01", "2007-02-02")),]
+  voltage <- as.numeric(days$Voltage)
+  gapower <- as.numeric(days$Global_active_power)
+  grpower <- as.numeric(days$Global_reactive_power)
+  days[,7:8] <- sapply(days[,7:8], as.numeric)
+  dates <- paste(as.character(days$Date), days$Time)
+  dates <- strptime(dates, "%Y-%m-%d %H:%M:%S")
+  png("plot4.png")
+  par(mfrow=c(2,2))
+  plot(dates, gapower,pch="",xlab="",ylab="Global Active Power (kilowatts)")
+  lines(dates,gapower)
+  plot(dates, voltage,pch="",xlab="datetime",ylab="Voltage")
+  lines(dates,voltage)
+  plot(dates, days$Sub_metering_1,pch="",xlab="",ylab="Energy sub metering")
+  lines(dates,days$Sub_metering_1)
+  lines(dates,days$Sub_metering_2, col="red")
+  lines(dates,days$Sub_metering_3, col="blue")
+  legend("topright", legend=names(days[,7:9]), col=c("black", "red", "blue") , lty=c(1,1,1))
+  plot(dates, grpower,pch="",xlab="datetime",ylab="Global_reactive_power (kilowatts)")
+  lines(dates,grpower)
+  dev.off()
+
+}
